@@ -5,8 +5,9 @@ import {
   Save, X, ArrowRight, Cloud, CloudOff, CalendarCheck, Settings, Printer, Edit3, Zap
 } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
+import { getAnalytics } from "firebase/analytics";
 import { 
-  getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken 
+  getAuth, signInAnonymously, onAuthStateChanged 
 } from 'firebase/auth';
 import { 
   getFirestore, collection, addDoc, deleteDoc, doc, 
@@ -66,6 +67,13 @@ const loadScript = (src) => {
     script.onerror = () => resolve(false);
     document.head.appendChild(script);
   });
+};
+
+// --- HELPER DATE LOCALE ---
+const getLocalDate = (dateStr) => {
+  if (!dateStr) return new Date();
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
 };
 
 // --- COMPOSANTS UTILITAIRES ---
@@ -512,7 +520,9 @@ export default function App() {
 
   const [user, setUser] = useState(null);
   const [db, setDb] = useState(null);
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'therabureau-app';
+  
+  // App ID fixe pour la version de production
+  const appId = "gestion-priorite-psycho";
 
   const [employees, setEmployees] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -525,18 +535,26 @@ export default function App() {
     };
     loadPdfScripts();
 
-    const firebaseConfig = JSON.parse(__firebase_config);
+    // Configuration Firebase pour le déploiement
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbY_uJN5inmYCWsb4-oT0PfpSOFw7zVNo",
+      authDomain: "horaire-de-bureau-clinique.firebaseapp.com",
+      projectId: "horaire-de-bureau-clinique",
+      storageBucket: "horaire-de-bureau-clinique.firebasestorage.app",
+      messagingSenderId: "415399117442",
+      appId: "1:415399117442:web:c8a0867ea3415e6658ea9b",
+      measurementId: "G-L5W8P1XG0S"
+    };
+
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); 
     const auth = getAuth(app);
     const firestore = getFirestore(app);
     setDb(firestore);
 
     const initAuth = async () => {
-      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-        await signInWithCustomToken(auth, __initial_auth_token);
-      } else {
+        // Authentification anonyme standard
         await signInAnonymously(auth);
-      }
     };
     initAuth();
 
