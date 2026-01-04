@@ -1,0 +1,6 @@
+kind: "AppHostingYaml"
+version: "v1"
+
+runConfig:
+  cpu: 1
+  memoryMiB: 512
