@@ -28,13 +28,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_THERABUREAU_APP }}
-          channelId: live
-          projectId: horaire-de-bureau-clinique
-- name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseToken: ${{ secrets.FIREBASE_TOKEN }} # Utilise le Token ici
+          firebaseToken: ${{ secrets.FIREBASE_TOKEN }}
           channelId: live
           projectId: horaire-de-bureau-clinique
