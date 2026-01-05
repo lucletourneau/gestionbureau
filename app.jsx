@@ -3,7 +3,6 @@ import {
   Clock, Users, Plus, Trash2, AlertCircle, Check, 
   FileText, ChevronLeft, ChevronRight, Save, X, ArrowRight, Cloud, CloudOff, Settings, Printer, Edit3, Zap
 } from 'lucide-react';
-} from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
 import { 
