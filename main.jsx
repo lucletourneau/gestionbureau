@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './app'; // Cherche exactement le fichier app.jsx à la racine
 
-// On récupère l'élément <div id="root"></div> de ton index.html
-const rootElement = document.getElementById('root');
-
-if (rootElement) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-} else {
-  console.error("L'élément 'root' est introuvable dans le fichier index.html");
+// Ce bloc test si l'import fonctionne vraiment
+let App;
+try {
+  const Module = await import('./app');
+  App = Module.default;
+  console.log("Diagnostic: app.jsx chargé avec succès");
+} catch (e) {
+  console.error("Diagnostic: ÉCHEC de chargement de app.jsx", e);
+  // On crée un composant d'erreur visuel si le build plante
+  App = () => <div style={{padding: '20px', color: 'red'}}><h1>Erreur de chargement</h1><p>{e.message}</p></div>;
 }
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
