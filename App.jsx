@@ -536,15 +536,14 @@ export default function App() {
     loadPdfScripts();
 
     // Configuration Firebase pour le déploiement
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbY_uJN5inmYCWsb4-oT0PfpSOFw7zVNo",
-      authDomain: "horaire-de-bureau-clinique.firebaseapp.com",
-      projectId: "horaire-de-bureau-clinique",
-      storageBucket: "horaire-de-bureau-clinique.firebasestorage.app",
-      messagingSenderId: "415399117442",
-      appId: "1:415399117442:web:c8a0867ea3415e6658ea9b",
-      measurementId: "G-L5W8P1XG0S"
-    };
+   const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
+};
 
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app); 
