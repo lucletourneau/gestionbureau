@@ -1,0 +1,50 @@
+name: Deploiement React vers Firebase
+
+# Déclencheurs : Quand ce workflow doit-il s'exécuter?
+on:
+  # Déploiement en production lors d'un push sur la branche principale
+  push:
+    branches:
+      - main
+      - master  # Inclure master si votre dépôt est plus ancien
+  # Déploiement de prévisualisation lors d'une Pull Request
+  pull_request:
+
+# Configuration des permissions pour le GITHUB_TOKEN
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Récupération du code source
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      # 2. Préparation de l'environnement Node.js
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Installation des dépendances (Méthode CI stricte)
+      - name: Installation des dépendances
+        run: npm ci
+
+      # 4. Compilation de l'application React
+      - name: Build de l'application
+        run: npm run build
+
+      # 5. Déploiement vers Firebase Hosting
+      - name: Déploiement Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: VOTRE_ID_PROJET_FIREBASE
+          channelId: live
