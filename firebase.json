@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "horaire-de-bureau-clinique",
     "public": "dist",
     "ignore": [
       "firebase.json",
