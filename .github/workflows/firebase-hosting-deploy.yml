@@ -25,6 +25,4 @@ jobs:
           VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
 
       - name: Deploy to Firebase
-        # J'ai mis --only hosting (sans nom spécifique) et --project avec ton ID réel
-        # IMPORTANT : Remplace METS_TON_ID_PROJET_ICI ci-dessous par le vrai ID (ex: gestion-priorite-psycho)
-        run: npx firebase-tools deploy --token ${{ secrets.FIREBASE_TOKEN }} --project METS_TON_ID_PROJET_ICI --only hosting
+        run: npx firebase-tools deploy --token ${{ secrets.FIREBASE_TOKEN }} --project horaire-de-bureau-clinique --only hosting
