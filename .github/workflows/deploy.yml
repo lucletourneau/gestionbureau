@@ -1,50 +1,37 @@
-name: Deploiement React vers Firebase
-
-# Déclencheurs : Quand ce workflow doit-il s'exécuter?
+name: Deploy to Firebase Hosting
 on:
-  # Déploiement en production lors d'un push sur la branche principale
   push:
     branches:
       - main
-      - master  # Inclure master si votre dépôt est plus ancien
-  # Déploiement de prévisualisation lors d'une Pull Request
-  pull_request:
-
-# Configuration des permissions pour le GITHUB_TOKEN
-permissions:
-  checks: write
-  contents: read
-  pull-requests: write
-
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    
     steps:
-      # 1. Récupération du code source
-      - name: Checkout du code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Préparation de l'environnement Node.js
-      - name: Installation de Node.js
+      # AJOUT : On installe Node explicitement SANS le cache pour éviter l'erreur
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: '20'
+          # Important : on ne met pas "cache: npm" ici car le lockfile n'existe pas
 
-      # 3. Installation des dépendances (Méthode CI stricte)
-      - name: Installation des dépendances
-        run: npm ci
+      - name: Install Dependencies
+        # "npm install" va générer le lockfile temporairement pour ce build
+        run: npm install
 
-      # 4. Compilation de l'application React
-      - name: Build de l'application
+      - name: Build Project
         run: npm run build
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
 
-      # 5. Déploiement vers Firebase Hosting
-      - name: Déploiement Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: VOTRE_ID_PROJET_FIREBASE
-          channelId: live
+      - name: Deploy to Firebase
+        # Remplace bien horaire-de-bureau-clinique si ton ID est différent
+        run: npx firebase-tools deploy --token ${{ secrets.FIREBASE_TOKEN }} --project horaire-de-bureau-clinique --only hosting
